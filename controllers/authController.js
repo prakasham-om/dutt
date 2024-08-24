@@ -60,7 +60,27 @@ exports.login = catchAsyncError(async (req, res, next) => {
 });
 
 exports.register = catchAsyncError(async (req, res, next) => {
-  const newUser = await User.create(req.body);
+  const { name, username, password, confirmPassword } = req.body;
 
+  // Validate input
+  if (!name || !username || !password || !confirmPassword) {
+    return res.status(400).json({ message: 'All fields are required' });
+  }
+
+  if (password !== confirmPassword) {
+    return res.status(400).json({ message: 'Passwords do not match' });
+  }
+
+  // Check if username already exists
+  const existingUser = await User.findOne({ username });
+  if (existingUser) {
+    return res.status(409).json({ message: 'Username already exists' });
+  }
+
+  // Create new user
+  const newUser = await User.create({ name, username, password });
+
+  // Assign token to cookie and send response
   assignTokenToCookie(newUser, res, 201);
 });
+
