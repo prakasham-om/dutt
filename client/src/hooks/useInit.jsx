@@ -42,7 +42,7 @@ const useInit = () => {
 
   // Fetch user contacts
   const { reqFn: fetchContacts } = useFetch(
-    { method: "GET", url: "/contacts" },
+    { method: "GET", url: `${process.env.REACT_APP_BASEURL}/contacts`},
     (data) => {
       dispatch(contactsActions.setContacts(data.data.contacts));
     }
