@@ -20,6 +20,7 @@ function App() {
 
   return (
     <div className="w-full h-full flex overflow-hidden bg-primary relative">
+      { `${process.env.BASE_URL}`}
       {loggedIn && (
         <>
           {/* Sidebar to show ChatList, Contacts, Settings Page */}
