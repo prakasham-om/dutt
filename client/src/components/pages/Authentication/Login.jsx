@@ -14,13 +14,23 @@ const schema = Yup.object().shape({
 
 function Login({ setUserWantsToLogin }) {
   const dispatch = useDispatch();
+  
+  // Define the success function with logging
+  const handleSuccess = (data) => {
+    console.log("Login response:", data); // Log the response data
+    dispatch(authActions.login());
+  };
+
+  // Define the error function if needed
+  const handleError = (error) => {
+    console.error("Login error:", error);
+  };
+
   // Request to log user in
   const { reqState, reqFn: loginRequest } = useFetch(
     { url: "/user/login", method: "POST" },
-    // Success
-    () => {
-      dispatch(authActions.login());
-    }
+    handleSuccess,
+    handleError
   );
 
   return (
@@ -34,7 +44,10 @@ function Login({ setUserWantsToLogin }) {
           password: "",
         }}
         validationSchema={schema}
-        onSubmit={loginRequest}
+        onSubmit={(values, actions) => {
+          loginRequest(values)
+            .catch(error => console.error("Submission error:", error));
+        }}
       >
         {({ errors, values }) => (
           <Form className="flex flex-col gap-[1.5rem]" autoComplete="off">
@@ -76,7 +89,7 @@ function Login({ setUserWantsToLogin }) {
       </Formik>
       <div
         onClick={() => setUserWantsToLogin(false)}
-        className="mt-[2rem] text-right  text-secondary-text underline cursor-pointer hover:text-cta-icon"
+        className="mt-[2rem] text-right text-secondary-text underline cursor-pointer hover:text-cta-icon"
       >
         New to Telegram
       </div>
