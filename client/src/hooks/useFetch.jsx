@@ -21,7 +21,7 @@ const useFetch = ({ method, url }, successFn, errorFn) => {
 
     try {
       setRequestState("loading");
-      const response = await fetch(`${process.env.BASE_URL || ''}/api${url}`, fetchOptions);
+      const response = await fetch(`${process.env.BASE_URL}/api${url}`, fetchOptions);
       let data;
       if (methodUpper !== "DELETE") {
         data = await response.json();
