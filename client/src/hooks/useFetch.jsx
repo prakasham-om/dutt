@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import { notificationActions } from "../store/notificationSlice";
 
 const useFetch = ({ method, url }, successFn, errorFn) => {
-  const [requestState, setRequestState] = useState("idle");
+  const [requestState, setRequestState] = useState();
   const dispatch = useDispatch();
 
   const requestFunction = async (values) => {
@@ -21,20 +21,12 @@ const useFetch = ({ method, url }, successFn, errorFn) => {
 
     try {
       setRequestState("loading");
-      const response = await fetch(`https://dutt-41dw.onrender.com/api${url}`, fetchOptions);
-
-      if (!response.ok) {
-        let errorMessage = "An error occurred";
-        try {
-          const errorData = await response.json();
-          errorMessage = errorData.message || "An error occurred";
-        } catch (error) {
-          // Fallback if response is not valid JSON
-        }
-        throw new Error(errorMessage);
+      const response = await fetch(`/api${url}`, fetchOptions);
+      let data;
+      if (methodUpper !== "DELETE") {
+        data = await response.json();
       }
-
-      const data = methodUpper !== "DELETE" ? await response.json() : null;
+      if (!response.ok) throw new Error(data.message);
       setRequestState("success");
       successFn && successFn(data);
       return data;
