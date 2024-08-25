@@ -13,8 +13,10 @@ const errorController = require("./controllers/errorController");
 
 app.use(express.json({ limit: "50mb" }));
 app.use(cookieParser());
-app.use(cors({origin:"*"}))
-
+app.use(cors({
+  origin: 'https://vercel.com/prakashamoms-projects/dutt', // Your frontend domain
+  credentials: true // Allow cookies to be sent
+}));
 // Routes
 app.use("/api/user", authRouter);
 
