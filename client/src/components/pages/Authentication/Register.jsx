@@ -55,7 +55,7 @@ function Register({ setUserWantsToLogin }) {
   return (
     <div className="basis-[35rem]">
       <h1 className="text-cta-icon font-semibold text-[2rem] uppercase mb-[2rem]">
-        Join Telegram
+        Join Dutt
       </h1>
       <Formik
         initialValues={{
@@ -137,7 +137,7 @@ function Register({ setUserWantsToLogin }) {
         onClick={() => setUserWantsToLogin(true)}
         className="mt-[2rem] text-right  text-secondary-text underline cursor-pointer hover:text-cta-icon"
       >
-        Already on Telegram
+        Already on Dutt
       </div>
     </div>
   );
