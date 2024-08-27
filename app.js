@@ -19,12 +19,12 @@ app.use(cors());
 app.use("/api/user", authRouter);
 
 // Protector
-app.use("/api/*", (req, res, next) => {
-  if (!req.cookies.userId)
-    return next(new ReqError(400, "You are not logged in"));
+// app.use("/api/*", (req, res, next) => {
+//   if (!req.cookies.userId)
+//     return next(new ReqError(400, "You are not logged in"));
 
-  next();
-});
+//   next();
+// });
 
 app.use("/api/contacts", contactsRouter);
 app.use("/api/profile", profileRouter);
