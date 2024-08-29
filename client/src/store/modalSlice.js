@@ -12,12 +12,13 @@ const modalSlice = createSlice({
   initialState,
   reducers: {
     closeModal: (state, { payload }) => {
-      console.log(payload);
+    //  console.log(payload);
       state.type = null;
       state.positions = {};
       state.payload = {};
     },
     openModal: (state, { payload }) => {
+      console.log(payload)
       state.type = payload.type;
       state.positions = payload.positions;
       state.payload = payload.payload || {};
