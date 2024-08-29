@@ -3,30 +3,36 @@ import { useDispatch } from "react-redux";
 import { notificationActions } from "../store/notificationSlice";
 
 const useFetch = ({ method, url }, successFn, errorFn) => {
-  const [requestState, setRequestState] = useState();
+  const [requestState, setRequestState] = useState(null);
   const dispatch = useDispatch();
 
   const requestFunction = async (values) => {
     const methodUpper = method.toUpperCase();
-    const fetchOptions =
-      methodUpper !== "GET"
-        ? {
-            method: methodUpper,
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(values),
-          }
-        : {   method: 'GET',  credentials:"include"};
+
+    const fetchOptions = {
+      method: methodUpper,
+      credentials: "include", // Always include credentials for all methods if needed
+      headers: {
+        "Content-Type": "application/json",
+      },
+      ...(methodUpper !== "GET" && { body: JSON.stringify(values) }),
+    };
 
     try {
       setRequestState("loading");
       const response = await fetch(`https://dutt-41dw.onrender.com/api${url}`, fetchOptions);
-      let data;
-      if (methodUpper !== "DELETE") {
+
+      let data = null;
+      if (methodUpper !== "DELETE" && response.ok) {
         data = await response.json();
       }
-      if (!response.ok) throw new Error(data.message);
+
+      if (!response.ok) {
+        // Handle error response
+        const errorMessage = data?.message || "An error occurred";
+        throw new Error(errorMessage);
+      }
+
       setRequestState("success");
       successFn && successFn(data);
       return data;
