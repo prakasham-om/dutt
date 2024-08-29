@@ -16,7 +16,6 @@ const useFetch = ({ method, url }, successFn, errorFn) => {
               "Content-Type": "application/json",
             },
             body: JSON.stringify(values),
-          credentials:"include",
           }
         : {    credentials:"include"};
 
