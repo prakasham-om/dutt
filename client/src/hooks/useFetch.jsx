@@ -21,7 +21,7 @@ const useFetch = ({ method, url }, successFn, errorFn) => {
 
     try {
       setRequestState("loading");
-      const response = await fetch(`https://dutt-41dw.onrender.com/api${url}`, fetchOptions);
+      const response = await fetch(`/api${url}`, fetchOptions);
       let data;
       if (methodUpper !== "DELETE") {
         data = await response.json();
