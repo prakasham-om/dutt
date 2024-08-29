@@ -11,7 +11,7 @@ const useFetch = ({ method, url }, successFn, errorFn) => {
 
     const fetchOptions = {
       method: methodUpper,
-      credentials: "include", // Always include credentials for all methods if needed
+      withCredentials: true
       headers: {
         "Content-Type": "application/json",
       },
