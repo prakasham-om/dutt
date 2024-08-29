@@ -11,7 +11,7 @@ const useFetch = ({ method, url }, successFn, errorFn) => {
 
     const fetchOptions = {
       method: methodUpper,
-      withCredentials: true,
+      credentials: module,
       headers: {
         "Content-Type": "application/json",
       },
