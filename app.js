@@ -13,9 +13,7 @@ const errorController = require("./controllers/errorController");
 
 app.use(express.json({ limit: "50mb" }));
 app.use(cookieParser());
-const allowedOrigins = ['https://dutt.vercel.app', 'dutt.vercel.app
-dutt-prakashamoms-projects.vercel.app
-'];
+const allowedOrigins = ['https://dutt.vercel.app', 'dutt-prakashamoms-projects.vercel.app'];
 
 const corsOptions = {
   origin: function(origin, callback) {
