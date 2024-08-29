@@ -17,7 +17,7 @@ const useFetch = ({ method, url }, successFn, errorFn) => {
             },
             body: JSON.stringify(values),
           }
-        : {    credentials:"include"};
+        : {   method: 'GET',  credentials:"include"};
 
     try {
       setRequestState("loading");
