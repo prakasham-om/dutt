@@ -13,10 +13,20 @@ const errorController = require("./controllers/errorController");
 
 app.use(express.json({ limit: "50mb" }));
 app.use(cookieParser());
-app.use(cors({
-  origin: 'https://dutt.vercel.app/',
-  credentials: true, 
-}));
+const allowedOrigins = ['https://dutt.vercel.app', 'https://another-allowed-domain.com'];
+
+const corsOptions = {
+  origin: function(origin, callback) {
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true
+};
+
+app.use(cors(corsOptions));
 // Routes
 app.use("/api/user", authRouter);
 
