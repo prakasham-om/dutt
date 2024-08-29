@@ -17,7 +17,7 @@ const assignTokenToCookie = (user, res, statusCode) => {
     secure: process.env.NODE_ENV === 'production', // Only use secure cookies in production
     sameSite: 'None',
     expires: new Date(
-      Date.now() + parseInt(process.env.JWT_EXPIRES_IN) * 24 * 60 * 60 * 1000
+      Date.now() + parseInt(process.env.JWT_EXPIRES_IN,10) * 24 * 60 * 60 * 1000
     ),
   };
 
