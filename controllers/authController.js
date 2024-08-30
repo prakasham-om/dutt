@@ -17,7 +17,7 @@ const assignTokenToCookie = (user, res, statusCode) => {
   const cookieOptions = {
     httpOnly: true, // Ensures the cookie is not accessible via JavaScript
     secure: process.env.NODE_ENV === 'production', // Secure cookies in production (over HTTPS)
-    sameSite: 'None', // Required if your site needs to work with cross-site requests
+    sameSite: 'Lax', // Required if your site needs to work with cross-site requests
     expires: new Date(
       Date.now() + parseInt(process.env.JWT_EXPIRES_IN, 10) * 24 * 60 * 60 * 1000 // Calculate expiration based on days
     ),
