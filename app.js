@@ -16,15 +16,8 @@ app.use(cookieParser());
 const allowedOrigins = ['https://dutt.vercel.app', 'dutt-prakashamoms-projects.vercel.app'];
 
 const corsOptions = {
-  method:"GET/POST",
-  origin: function(origin, callback) {
-    if (allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true
+  origin: '*', // Allow requests from any origin
+  credentials: true // Allow cookies to be sent
 };
 
 app.use(cors(corsOptions));
