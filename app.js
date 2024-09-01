@@ -14,23 +14,8 @@ const errorController = require("./controllers/errorController");
 app.use(express.json({ limit: "50mb" }));
 app.use(cookieParser());
 
-const allowedOrigins = [
-  'https://dutt.vercel.app', 
-  'https://dutt-prakashamoms-projects.vercel.app'
-];
 
-const corsOptions = {
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true // Allow cookies to be sent
-};
-
-app.use(cors(corsOptions));
+app.use(cors({origin:"*"}));
 
 // Routes
 app.use("/api/user", authRouter);
