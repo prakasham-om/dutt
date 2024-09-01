@@ -13,15 +13,13 @@ const errorController = require("./controllers/errorController");
 
 app.use(express.json({ limit: "50mb" }));
 app.use(cookieParser());
-
-
-app.use(cors({origin:"*"}));
+app.use(cors());
 
 // Routes
 app.use("/api/user", authRouter);
 
 // Protector
-app.use("/*", (req, res, next) => {
+app.use("/api/*", (req, res, next) => {
   if (!req.cookies.userId)
     return next(new ReqError(400, "You are not logged in"));
 
