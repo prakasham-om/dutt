@@ -21,7 +21,7 @@ app.use(cors({origin:"*"}));
 app.use("/api/user", authRouter);
 
 // Protector
-app.use("/api/*", (req, res, next) => {
+app.use("/*", (req, res, next) => {
   if (!req.cookies.userId)
     return next(new ReqError(400, "You are not logged in"));
 
