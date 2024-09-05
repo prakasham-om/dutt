@@ -14,7 +14,7 @@ const assignTokenToCookie = (user, res, statusCode) => {
 
   const cookieOptions = {
     httpOnly: true,
-    secure: true,
+    secure: process.env.NODE_ENV === 'production',
     expires: new Date(
       Date.now() + parseInt(process.env.JWT_EXPIRES_IN) * 24 * 60 * 60 * 1000
     ),
