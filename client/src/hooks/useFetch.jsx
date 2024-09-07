@@ -6,7 +6,7 @@ import { authActions } from '../store/authSlice'; // Import auth actions
 const useFetch = ({ method, url }, successFn, errorFn) => {
   const [requestState, setRequestState] = useState('idle');
   const dispatch = useDispatch();
-  const token = useSelector((state) => state.authSlice.token); // Access token from authSlice
+  const token = useSelector((state) => state.authReducer.token); // Access token from authSlice
 
   const requestFunction = async (values) => {
     const methodUpper = method.toUpperCase();
