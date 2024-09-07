@@ -26,12 +26,8 @@ app.use(cookieParser());
 
 // Public routes
 app.use("/api/user", authRouter);
-app.use("/api/contacts", contactsRouter);
-app.use("/api/profile", profileRouter);
-app.use("/api/chatRoom", chatRoomRouter);
-app.use("/api/upload", uploadRouter);
 
-// Middleware to protect routes
+
 app.use("/api/*", (req, res, next) => {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
@@ -48,6 +44,15 @@ app.use("/api/*", (req, res, next) => {
     next();
   });
 });
+
+
+app.use("/api/contacts", contactsRouter);
+app.use("/api/profile", profileRouter);
+app.use("/api/chatRoom", chatRoomRouter);
+app.use("/api/upload", uploadRouter);
+
+// Middleware to protect routes
+
 
 // Error handling middleware
 app.use(errorController);
