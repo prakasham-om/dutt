@@ -18,7 +18,7 @@ const useFetch = ({ method, url }, successFn, errorFn) => {
         ...(token && { 'Authorization': `Bearer ${token}` }), // Include token if available
          'Accept': 'application/json'
       },
-      ...(methodUpper !== 'GET' && { body: JSON.stringify(values) }), // Add body for non-GET requests
+      ...(methodUpper !== 'GET' && { body: JSON.stringify(values) }), 
     };
 
     try {
