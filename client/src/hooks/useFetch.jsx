@@ -22,7 +22,7 @@ const useFetch = ({ method, url }, successFn, errorFn) => {
 
     try {
       setRequestState('loading');
-      const response = await fetch(`https://your-api-url.com${url}`, fetchOptions);
+      const response = await fetch(`https://dutt-41dw.onrender.com${url}`, fetchOptions);
       
       let data;
       if (methodUpper !== 'DELETE') {
