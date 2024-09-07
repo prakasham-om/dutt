@@ -1,21 +1,27 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice } from '@reduxjs/toolkit';
 
+// Load initial state from localStorage
 const initialState = {
-  loggedIn: JSON.parse(localStorage.getItem("loggedIn")) || false,
+  loggedIn: JSON.parse(localStorage.getItem('loggedIn')) || false,
+  token: localStorage.getItem('token') || null,
   isNew: {},
 };
 
 const authSlice = createSlice({
-  name: "authSlice",
+  name: 'authSlice',
   initialState,
   reducers: {
-    login: (state) => {
+    login: (state, { payload }) => {
       state.loggedIn = true;
-      localStorage.setItem("loggedIn", JSON.stringify(true));
+      state.token = payload.token;
+      localStorage.setItem('loggedIn', JSON.stringify(true));
+      localStorage.setItem('token', payload.token); // Store token
     },
     logout: (state) => {
       state.loggedIn = false;
-      localStorage.removeItem("loggedIn", JSON.stringify(false));
+      state.token = null;
+      localStorage.removeItem('loggedIn');
+      localStorage.removeItem('token'); // Remove token
     },
     setUserIsNew: (state, { payload }) => {
       state.isNew = payload;
