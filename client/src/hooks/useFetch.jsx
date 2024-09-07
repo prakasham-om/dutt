@@ -15,15 +15,19 @@ const useFetch = ({ method, url }, successFn, errorFn) => {
       method: methodUpper,
       headers: {
         'Content-Type': 'application/json',
-        ...(token && { 'Authorization': `Bearer ${token}` }), // Include token in header
+        ...(token && { 'Authorization': `Bearer ${token}` }), // Include token in header if available
       },
-      ...(methodUpper !== 'GET' && { body: JSON.stringify(values) }),
+      ...(methodUpper !== 'GET' && { body: JSON.stringify(values) }), // Add body for non-GET requests
     };
 
     try {
       setRequestState('loading');
       const response = await fetch(`https://your-api-url.com${url}`, fetchOptions);
-      const data = methodUpper !== 'DELETE' ? await response.json() : undefined;
+      
+      let data;
+      if (methodUpper !== 'DELETE') {
+        data = await response.json();
+      }
 
       if (!response.ok) throw new Error(data.message || 'An error occurred');
 
@@ -38,6 +42,12 @@ const useFetch = ({ method, url }, successFn, errorFn) => {
           type: 'error',
         })
       );
+
+      // Optionally handle specific error cases, like unauthorized access
+      if (error.message.includes('Unauthorized')) {
+        dispatch(authActions.logout()); // Clear token and update state on unauthorized access
+      }
+
       errorFn && errorFn(error);
     }
   };
