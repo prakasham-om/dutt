@@ -7,7 +7,6 @@ import { useDispatch } from "react-redux";
 import { authActions } from "../../../store/authSlice";
 import Spinner from "../../globals/Spinner";
 
-// Define validation schema with Yup
 const schema = Yup.object().shape({
   username: Yup.string().required("Field is required"),
   password: Yup.string().required("Field is required"),
@@ -15,35 +14,19 @@ const schema = Yup.object().shape({
 
 function Login({ setUserWantsToLogin }) {
   const dispatch = useDispatch();
-  
-  // Define the success function with logging and token handling
-  const handleSuccess = (data) => {
-    console.log("Login response:", data); // Log the response data
-    if (data.token) {
-      dispatch(authActions.login(data.token)); // Store the token
-    } else {
-      // Handle case where token is not returned
-      console.error("Login response does not contain a token.");
-    }
-  };
-
-  // Define the error function if needed
-  const handleError = (error) => {
-    console.error("Login error:", error);
-    // Optionally, dispatch an action to show an error notification
-  };
-
   // Request to log user in
   const { reqState, reqFn: loginRequest } = useFetch(
     { url: "/user/login", method: "POST" },
-    handleSuccess,
-    handleError
+    // Success
+    () => {
+      dispatch(authActions.login());
+    }
   );
 
   return (
     <div className="basis-[35rem]">
       <h1 className="text-cta-icon font-semibold text-[2rem] uppercase mb-[2rem]">
-        Login To Dutt
+        Login To Telegram
       </h1>
       <Formik
         initialValues={{
@@ -51,14 +34,9 @@ function Login({ setUserWantsToLogin }) {
           password: "",
         }}
         validationSchema={schema}
-        onSubmit={(values, actions) => {
-          loginRequest(values)
-            .then(() => actions.resetForm()) // Reset form on successful login
-            .catch(error => console.error("Submission error:", error))
-            .finally(() => actions.setSubmitting(false)); // Ensure form is reset to not loading state
-        }}
+        onSubmit={loginRequest}
       >
-        {({ errors, values, isSubmitting }) => (
+        {({ errors, values }) => (
           <Form className="flex flex-col gap-[1.5rem]" autoComplete="off">
             <FormField
               labelName="Username"
@@ -87,7 +65,6 @@ function Login({ setUserWantsToLogin }) {
                 !errors.username && !errors.password && "opacity-100"
               }`}
               type="submit"
-              disabled={isSubmitting || reqState === "loading"} // Disable button when submitting or loading
             >
               {reqState !== "loading" && "Login"}
               {reqState === "loading" && (
@@ -99,9 +76,9 @@ function Login({ setUserWantsToLogin }) {
       </Formik>
       <div
         onClick={() => setUserWantsToLogin(false)}
-        className="mt-[2rem] text-right text-secondary-text underline cursor-pointer hover:text-cta-icon"
+        className="mt-[2rem] text-right  text-secondary-text underline cursor-pointer hover:text-cta-icon"
       >
-        New to Dutt
+        New to Telegram
       </div>
     </div>
   );
