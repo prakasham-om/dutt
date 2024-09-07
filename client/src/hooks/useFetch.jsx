@@ -1,49 +1,59 @@
-const express = require("express");
-const cors = require("cors");
-const jwt = require("jsonwebtoken");
+import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { notificationActions } from '../store/notificationSlice';
+import { authActions } from '../store/authSlice'; // Import auth actions
 
-const app = express();
-const authRouter = require("./routers/authRouter");
-const contactsRouter = require("./routers/contactsRouter");
-const chatRoomRouter = require("./routers/chatRoomRouter");
-const profileRouter = require("./routers/profileRouter");
-const uploadRouter = require("./routers/uploadRouter");
-const ReqError = require("./utilities/ReqError");
-const errorController = require("./controllers/errorController");
+const useFetch = ({ method, url }, successFn, errorFn) => {
+  const [requestState, setRequestState] = useState('idle');
+  const dispatch = useDispatch();
+  const token = useSelector((state) => state.authSlice.token); // Access token from authSlice
 
-// Middleware
-app.use(express.json({ limit: "50mb" }));
-app.use(cors());
+  const requestFunction = async (values) => {
+    const methodUpper = method.toUpperCase();
+    
+    const fetchOptions = {
+      method: methodUpper,
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token && { 'Authorization': `Bearer ${token}` }), // Include token if available
+      },
+      ...(methodUpper !== 'GET' && { body: JSON.stringify(values) }), // Add body for non-GET requests
+    };
 
-// Routes
-app.use("/api/user", authRouter);
+    try {
+      setRequestState('loading');
+      const response = await fetch(`https://dutt-41dw.onrender.com${url}`, fetchOptions);
 
-// Middleware to protect routes
-app.use("/api/*", (req, res, next) => {
-  const authHeader = req.headers.authorization;
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message || 'An error occurred');
+      }
 
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return next(new ReqError(401, "Unauthorized: No token provided"));
-  }
+      const data = methodUpper !== 'DELETE' ? await response.json() : null;
+      setRequestState('success');
+      successFn && successFn(data);
+      return data;
+    } catch (error) {
+      setRequestState('error');
+      dispatch(
+        notificationActions.addNotification({
+          message: error.message,
+          type: 'error',
+        })
+      );
 
-  const token = authHeader.split(" ")[1];
+      if (error.message.includes('Unauthorized')) {
+        dispatch(authActions.logout()); // Clear token and update state on unauthorized access
+      }
 
-  jwt.verify(token, process.env.JWT_SECRET_KEY, (err, decoded) => {
-    if (err) {
-      return next(new ReqError(401, "Unauthorized: Invalid token"));
+      errorFn && errorFn(error);
     }
+  };
 
-    req.user = decoded;
-    next();
-  });
-});
+  return {
+    reqState: requestState,
+    reqFn: requestFunction,
+  };
+};
 
-app.use("/api/contacts", contactsRouter);
-app.use("/api/profile", profileRouter);
-app.use("/api/chatRoom", chatRoomRouter);
-app.use("/api/upload", uploadRouter);
-
-// Error handling middleware
-app.use(errorController);
-
-module.exports = app;
+export default useFetch;
