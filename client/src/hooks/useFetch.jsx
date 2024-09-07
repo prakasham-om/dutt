@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { notificationActions } from '../store/notificationSlice';
-import { authActions } from '../store/authSlice'; // Import auth actions if needed
+
 
 const useFetch = ({ method, url }, successFn, errorFn) => {
   const [requestState, setRequestState] = useState('idle');
   const dispatch = useDispatch();
-  const token = useSelector((state) => state.authSlice.token); // Get token from Redux state
+  const token = useSelector((state) => state.authReducer.token); // Get token from Redux state
 
   const requestFunction = async (values) => {
     const methodUpper = method.toUpperCase();
