@@ -16,23 +16,29 @@ const schema = Yup.object().shape({
 function Login({ setUserWantsToLogin }) {
   const dispatch = useDispatch();
   
-  // Define success handler for login
+  // Define the success function with logging and token handling
   const handleSuccess = (data) => {
     console.log("Login response:", data); // Log the response data
-    dispatch(authActions.login(data.token)); // Assuming the token is part of data
+    if (data.token) {
+      dispatch(authActions.login(data.token)); // Store the token
+    } else {
+      // Handle case where token is not returned
+      console.error("Login response does not contain a token.");
+    }
   };
 
-  // Define error handler for login
+  // Define the error function if needed
   const handleError = (error) => {
     console.error("Login error:", error);
     // Optionally, dispatch an action to show an error notification
   };
 
-  // Initialize the useFetch hook for the login request
+  // Request to log user in
   const { reqState, reqFn: loginRequest } = useFetch(
     { url: "/user/login", method: "POST" },
     handleSuccess,
-    handleError
+    handleError,
+    true // Specify this is a login request
   );
 
   return (
