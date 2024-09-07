@@ -12,12 +12,16 @@ const signToken = (user) => {
 const assignTokenToCookie = (user, res, statusCode) => {
   const token = signToken(user);
 
+ const assignTokenToCookie = (user, res, statusCode) => {
+  const token = signToken(user);
+
   const cookieOptions = {
     httpOnly: true,
-    secure: true,
+    secure: process.env.NODE_ENV === 'production',
     expires: new Date(
       Date.now() + parseInt(process.env.JWT_EXPIRES_IN) * 24 * 60 * 60 * 1000
     ),
+    path: '/',
   };
 
   res.cookie("telegramToken", token, cookieOptions);
