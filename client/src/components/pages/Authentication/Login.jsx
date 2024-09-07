@@ -37,8 +37,7 @@ function Login({ setUserWantsToLogin }) {
   const { reqState, reqFn: loginRequest } = useFetch(
     { url: "/user/login", method: "POST" },
     handleSuccess,
-    handleError,
-    true // Specify this is a login request
+    handleError
   );
 
   return (
