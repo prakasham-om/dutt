@@ -5,7 +5,7 @@ const catchAsyncError = require("../utilities/catchAsyncError");
 
 const signToken = (user) => {
   return jwt.sign({ id: user._id }, process.env.JWT_SECRET_KEY, {
-    expiresIn: process.env.JWT_EXPIRES_IN || '7d', // Default to 7 days if not specified
+    expiresIn: process.env.JWT_EXPIRES_IN,
   });
 };
 
@@ -14,17 +14,16 @@ const assignTokenToCookie = (user, res, statusCode) => {
 
   const cookieOptions = {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production', // Secure flag for production
+    secure: true,
     expires: new Date(
-      Date.now() + (parseInt(process.env.JWT_EXPIRES_IN, 10) || 7) * 24 * 60 * 60 * 1000 // Default to 7 days if not specified
+      Date.now() + parseInt(process.env.JWT_EXPIRES_IN) * 24 * 60 * 60 * 1000
     ),
-    path: '/',
   };
 
   res.cookie("telegramToken", token, cookieOptions);
-  res.cookie("userId", user._id.toString(), cookieOptions); // Ensure userId is a string
+  res.cookie("userId", user._id);
 
-  user.password = undefined; // Hide sensitive data
+  user.password = undefined;
 
   res.status(statusCode).json({
     status: "success",
@@ -36,28 +35,32 @@ const assignTokenToCookie = (user, res, statusCode) => {
 };
 
 exports.login = catchAsyncError(async (req, res, next) => {
+  // Takes in username and password
   const { username, password } = req.body;
 
-  if (!username || !password) {
-    return next(new ReqError(400, "Username and Password are required"));
-  }
+  // If there's no details given
+  if (!username) return next(new ReqError(400, "Username and Password needed"));
 
   const foundUser = await User.findOne({ username });
 
-  if (!foundUser) {
-    return next(new ReqError(400, "Username or Password is incorrect"));
-  }
+  //   If username does not exist
+  if (!foundUser)
+    return next(new ReqError(400, "Username or Password incorrect"));
 
-  const passwordIsValid = await foundUser.checkPasswordValidity(password, foundUser.password);
+  const passwordGivenCorrect = await foundUser.checkPasswordValidity(
+    password,
+    foundUser.password
+  );
 
-  if (!passwordIsValid) {
-    return next(new ReqError(400, "Username or Password is incorrect"));
-  }
+  //   If given password is incorrect
+  if (!passwordGivenCorrect)
+    return next(new ReqError(400, "Username or Password incorrect"));
 
   assignTokenToCookie(foundUser, res, 200);
 });
 
 exports.register = catchAsyncError(async (req, res, next) => {
   const newUser = await User.create(req.body);
+
   assignTokenToCookie(newUser, res, 201);
 });
