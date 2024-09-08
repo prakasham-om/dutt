@@ -13,7 +13,11 @@ const errorController = require("./controllers/errorController");
 
 app.use(express.json({ limit: "50mb" }));
 app.use(cookieParser());
-app.use(cors());
+app.use(cors({
+  origin: 'https://dutt.vercel.app', // Allow requests from this origin
+  methods: 'GET,POST,PUT,DELETE', // Allowed methods
+  allowedHeaders: 'Content-Type,Authorization' // Allowed headers
+}));app.use(cors());
 
 // Routes
 app.use("/api/user", authRouter);
