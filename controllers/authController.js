@@ -14,8 +14,6 @@ const assignTokenToCookie = (user, res, statusCode) => {
 
   const cookieOptions = {
     httpOnly: true,
-    secure: false, // Only set secure in production
-    sameSite: 'None', // Necessary for cross-site cookies
     expires: new Date(
       Date.now() + parseInt(process.env.JWT_EXPIRES_IN) * 24 * 60 * 60 * 1000
     ),
